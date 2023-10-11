@@ -1,15 +1,19 @@
-# TODO: Create the function to check the answer.Create the function to update the score. Create the function to keep the score. Create the function to update the color of the box depending on the answer.
+# TODO: Create the function to check the answer.
+# TODO: Create the function to update the score. 
+# TODO: Create the function to keep the score. 
+# TODO: Create the function to update the color of the box depending on the answer.
+# TODO: Consider changing the design of class App_gui. I think it needs to be more simple and all the methods to be inside the main or in a different class.
+ 
 import tkinter as tk
 import random
 
 class Name_pop_up:
-    def __init__(self, master) -> None:
-        self.master = master
-        self.master.title("Welcome")
-        self.master.minsize(width=150, height=150)
-        self.master.config(padx=20, pady=20)
-
-
+    def __init__(self, popup_window:object) -> None:
+        self.popup_window = popup_window
+        self.popup_window.title("Welcome")
+        self.popup_window.minsize(width=150, height=150)
+        self.popup_window.config(padx=20, pady=20)
+        self.name = None
 
         self.label = tk.Label(text="What is your name?", font=("Arial", 20))
         self.label.grid(column=0, row=0)
@@ -17,21 +21,19 @@ class Name_pop_up:
         self.entry = tk.Entry(width=5, background="white", foreground="black", font=("Arial", 20))
         self.entry.grid(column=0, row=1)
 
-        self.button = tk.Button(text="Start", command=self.on_start, font=("Arial", 20))
-        self.button.grid(column=0, row=2)
+        self.start_button = tk.Button(text="Start", command=self.on_start, font=("Arial", 20))
+        self.start_button.grid(column=0, row=2)
         
     def on_start(self):
-        name = self.entry.get()
-        self.master.destroy()
-        self.start_main_window(name)
-    
-    def start_main_window(self, name):
-        main_window = tk.Tk()
-        app_start = Mathy(main_window, name)
-        main_window.mainloop()
+        self.name = self.entry.get()
+        self.popup_window.destroy()
+        
+    def get_name(self) -> str:
+        return self.name
+        
 
 
-class Mathy:
+class App_gui:
 
     def __init__(self, main_window, name):
         self.main_window = main_window
@@ -44,46 +46,46 @@ class Mathy:
         
         # 1st Row
         # Name label
-        self.label_00 = tk.Label(text=f"Name:{name}", font=("Arial", 20) )
-        self.label_00.grid(column=0, row=0)
+        self.name_label = tk.Label(text=f"Name:{name}", font=("Arial", 20) )
+        self.name_label.grid(column=0, row=0)
         # Kid's name label
-        self.label_10 = tk.Label(text="", font=("Arial", 20))
-        self.label_10.grid(column=1, row=0)
+        self.empty_label_10 = tk.Label(text="", font=("Arial", 20))
+        self.empty_label_10.grid(column=1, row=0)
         # Score Label
-        self.label_30 = tk.Label(text="Score: ", font=("Arial", 20) )
-        self.label_30.grid(column=3, row=0)
+        self.score_label = tk.Label(text="Score: ", font=("Arial", 20) )
+        self.score_label.grid(column=3, row=0)
         # Score value label
-        self.label_40 = tk.Label(text=f"{self.score}", font=("Arial", 20))
-        self.label_40.grid(column=4, row=0)
+        self.score_label_value = tk.Label(text=f"{self.score}", font=("Arial", 20))
+        self.score_label_value.grid(column=4, row=0)
 
         # 2nd Row
-        # X value
-        self.label_01 = tk.Label(text=" X ", font=("Arial", 36) )
-        self.label_01.grid(column=0, row=1)
-        # Operator
-        self.label_11 = tk.Label(text="The operator", font=("Arial", 36))
-        self.label_11.grid(column=1, row=1)
-        # Y value
-        self.label_21 = tk.Label(text=" Y ", font=("Arial", 36))
-        self.label_21.grid(column=2, row=1)
-        # Result value
-        self.label_31 = tk.Label(text=" = ", font=("Arial", 36))
-        self.label_31.grid(column=3, row=1)
-        # Entry of Answer
-        self.input_41 = tk.Entry(width=5, background="white", foreground="black", font=("Arial", 28))
-        self.input_41.grid(column=4, row=1)
+        self.x_label = tk.Label(text=" X ", font=("Arial", 36) )
+        self.x_label.grid(column=0, row=1)
+        
+        self.op_label = tk.Label(text="The operator", font=("Arial", 36))
+        self.op_label.grid(column=1, row=1)
+        
+        self.y_label = tk.Label(text=" Y ", font=("Arial", 36))
+        self.y_label.grid(column=2, row=1)
+        
+        self.equal_label = tk.Label(text=" = ", font=("Arial", 36))
+        self.equal_label.grid(column=3, row=1)
+        
+        self.answer_input = tk.Entry(width=5, background="white", foreground="black", font=("Arial", 28))
+        self.answer_input.grid(column=4, row=1)
 
         # 3rd Row
-        self.label_03 = tk.Label(text="Correct \nAnswer: ", font=("Arial", 28) )
-        self.label_03.grid(column=0, row=3)
-        self.label_13 = tk.Label(text=" ", font=("Arial", 28) )
-        self.label_13.grid(column=1, row=3)
-        # Button Next
-        self.button_33 = tk.Button(text="Next", command=self.new_challenge, font=("Arial", 20))
-        self.button_33.grid(column=3, row=3, rowspan=1, sticky="nsew")
-        # Button OK
-        self.button_43 = tk.Button(text="OK", command=self.ok_click, font=("Arial", 20))
-        self.button_43.grid(column=4, row=3, rowspan=1, sticky="nsew")
+        self.correct_answer_text_label = tk.Label(text="Correct \nAnswer: ", font=("Arial", 28) )
+        self.correct_answer_text_label.grid(column=0, row=3)
+
+        self.correct_answer_value_label = tk.Label(text=" ", font=("Arial", 28) )
+        self.correct_answer_value_label.grid(column=1, row=3)
+        
+        self.next_button = tk.Button(text="Next", command=self.new_challenge, font=("Arial", 20))
+        self.next_button.grid(column=3, row=3, rowspan=1, sticky="nsew")
+       
+        self.ok_button = tk.Button(text="OK", command=self.ok_click, font=("Arial", 20))
+        self.ok_button.grid(column=4, row=3, rowspan=1, sticky="nsew")
         
         self.new_challenge()
 
@@ -136,9 +138,9 @@ class Mathy:
         return x / y
 
     def update_labels(self, x: int, operator: str, y: int) -> None:
-        self.label_01.configure(text=x)
-        self.label_11.configure(text=operator)
-        self.label_21.configure(text=y)    
+        self.x_label.configure(text=x)
+        self.op_label.configure(text=operator)
+        self.y_label.configure(text=y)    
 
     def clear_click(self):
         pass
@@ -150,9 +152,18 @@ class Mathy:
         self.new_challenge()
         
 def main():
-    pop_up_root = tk.Tk()
-    pop_up = Name_pop_up(pop_up_root)
-    pop_up_root.mainloop()
+
+    # Name gathering window
+    pop_up_window = tk.Tk()
+    pop_up = Name_pop_up(pop_up_window)
+    pop_up_window.mainloop()
+        
+    name = pop_up.get_name()
+
+    # Main application window
+    main_window = tk.Tk()
+    app_start = App_gui(main_window, name)
+    main_window.mainloop()
 
 if __name__ == "__main__":
     main()        
