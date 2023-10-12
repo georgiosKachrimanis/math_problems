@@ -2,11 +2,12 @@
 # TODO: Create the function to update the score. 
 # TODO: Create the function to keep the score. 
 # TODO: Create the function to update the color of the box depending on the answer.
-# TODO: Consider changing the design of class App_gui. I think it needs to be more simple and all the methods to be inside the main or in a different class.
+# Done: Consider changing the design of class App_gui. I think it needs to be more simple and all the methods to be inside the main or in a different class.
  
 import tkinter as tk
 import random
 
+TRIES = 3
 class Name_pop_up:
     def __init__(self, popup_window:object) -> None:
         self.popup_window = popup_window
@@ -81,61 +82,12 @@ class App_gui:
         self.correct_answer_value_label = tk.Label(text=" ", font=("Arial", 28) )
         self.correct_answer_value_label.grid(column=1, row=3)
         
-        self.next_button = tk.Button(text="Next", command=self.new_challenge, font=("Arial", 20))
+        self.next_button = tk.Button(text="Next", font=("Arial", 20))
         self.next_button.grid(column=3, row=3, rowspan=1, sticky="nsew")
        
         self.ok_button = tk.Button(text="OK", command=self.ok_click, font=("Arial", 20))
         self.ok_button.grid(column=4, row=3, rowspan=1, sticky="nsew")
         
-        self.new_challenge()
-
-    def new_challenge(self) -> int:
-        """
-        Generates a math challenge.
-        - Addition: Generates two numbers between 0 and 1000.
-        - Subtraction: Generates two numbers ensuring the minuend is greater than or equal to the subtrahend.
-        - Multiplication: Generates two numbers between 0 and 10.
-        - Division: Generates two numbers where the dividend is a multiple of the divisor.
-        """
-        challenge_type = random.randint(1,4) 
-        if challenge_type == 1: 
-            return self.generate_addition()
-        elif challenge_type == 2: 
-            return self.generate_subtraction()
-        elif challenge_type == 3: 
-            return self.generate_multiplication()
-        else: 
-            return self.generate_division()
-        
-    def generate_addition(self) -> int:
-        x = random.randint(0, 1000)
-        y = random.randint(0, 1000)
-        self.update_labels(x, " + ", y)
-        return x + y
-
-    def generate_subtraction(self) -> int:
-        x = random.randint(0, 1000)
-        y = random.randint(0, 1000)
-        while x < y:
-            x = random.randint(0, 1000)
-            y = random.randint(0, 1000)
-        self.update_labels(x, " - ", y)
-        return x - y
-
-    def generate_multiplication(self) -> int:
-        x = random.randint(0,10)
-        y = random.randint(0,10)
-        self.update_labels(x, " * ", y)
-        return x * y
-
-    def generate_division(self) -> int:
-        x = random.randint(1,100)
-        y = random.randint(1,10)
-        while x % y != 0:
-            x = random.randint(1,100)
-            y = random.randint(1,10)
-        self.update_labels(x, " / ", y)
-        return x / y
 
     def update_labels(self, x: int, operator: str, y: int) -> None:
         self.x_label.configure(text=x)
@@ -150,7 +102,59 @@ class App_gui:
 
     def next_click(self):
         self.new_challenge()
+
+class Challenge:
+
+    """
+        Generates a math challenge.
+        - Addition: Generates two numbers between 0 and 1000.
+        - Subtraction: Generates two numbers ensuring the minuend is greater than or equal to the subtrahend.
+        - Multiplication: Generates two numbers between 0 and 10.
+        - Division: Generates two numbers where the dividend is a multiple of the divisor.
+    """
+    def __init__(self) -> None:
+        self.type = random.randint(0,9)
+        self.x = None
+        self.y = None
+        self.operator = None
+
+        if self.type >= 0 and self.type <= 1: 
+            self.generate_addition()
+        elif self.type >= 2 and self.type <=3: 
+            self.generate_subtraction()
+        elif self.type >= 4 and self.type <=7: 
+            self.generate_multiplication()
+        else: 
+            self.generate_division()
+
+    def generate_addition(self) :
+        self.x = random.randint(0, 1000)
+        self.y = random.randint(0, 1000)
+        self.operator = " + "
+    
+    def generate_subtraction(self):
+        self.x = random.randint(0, 1000)
+        self.y = random.randint(0, 1000)
+        while self.x < self.y:
+            self.x = random.randint(0, 1000)
+            self.y = random.randint(0, 1000)
+        self.operator = " - "
         
+
+    def generate_multiplication(self):
+        self.x = random.randint(0, 10)
+        self.y = random.randint(0, 10)
+        self.operator = " * "
+
+    def generate_division(self):
+        x = random.randint(1,100)
+        y = random.randint(1,10)
+        while x % y != 0:
+            x = random.randint(1,100)
+            y = random.randint(1,10)
+        self.operator = " / "
+    
+
 def main():
 
     # Name gathering window
@@ -163,7 +167,14 @@ def main():
     # Main application window
     main_window = tk.Tk()
     app_start = App_gui(main_window, name)
-    main_window.mainloop()
+
+    while TRIES !=0:
+        
+        new_challenge = Challenge()
+        app_start.update_labels(x=new_challenge.x, operator=new_challenge.operator, y=new_challenge.y )
+        main_window.mainloop()
+
+    
 
 if __name__ == "__main__":
     main()        
