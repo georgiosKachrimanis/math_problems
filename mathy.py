@@ -59,6 +59,7 @@ class App_gui:
         self.current_challenge = None
         self.answer = None
         self.score = 0
+
         
         # 1st Row
         # Name label
@@ -94,24 +95,20 @@ class App_gui:
         
         self.answer_input = tk.Entry(width=5, background="white", foreground="black", font=("Arial", 28))
         self.answer_input.grid(column=4, row=2)
-
-        # 3rd Row
-        self.correct_answer_text_label = tk.Label(text="Correct \nAnswer: ", font=("Arial", 28) )
-        self.correct_answer_text_label.grid(column=0, row=3)
-
-        self.correct_answer_value_label = tk.Label(text=" ", font=("Arial", 28) )
-        self.correct_answer_value_label.grid(column=1, row=3)
         
-        self.next_button = tk.Button(text="Next", command=self.next_click, font=("Arial", 20))
+        self.next_button = tk.Button(text="Skip", command=self.next_click, font=("Arial", 20))
         self.next_button.grid(column=3, row=3, rowspan=1, sticky="nsew")
        
         self.ok_button = tk.Button(text="OK", command=self.ok_click, font=("Arial", 20))
         self.ok_button.grid(column=4, row=3, rowspan=1, sticky="nsew")
         
+        
+
     def new_challenge(self):
         self.current_challenge = Challenge()
         self.update_labels(x=self.current_challenge.x, operator=self.current_challenge.operator, y=self.current_challenge.y)
         self.answer_input.config(highlightbackground="white", highlightthickness=1) # User might skip a difficult answer with also leaving the box empty, in order to avoid the box to still be highlighted
+        
 
     def update_labels(self, x: int, operator: str, y: int) -> None:
         self.x_label.configure(text=x)
@@ -123,35 +120,41 @@ class App_gui:
         self.tries = self.tries - 1
 
     def ok_click(self):
-        
         answer = self.check_entry()
+        correct_answer = self.current_challenge.result
 
-        if answer == None:
-            pass
-        elif self.current_challenge and self.current_challenge.check_answer(answer):
-            self.score += 1
-            self.score_label_value.configure(text=str(self.score))
-            self.new_challenge()
-        else:
-            self.tries -= 1
-            self.new_challenge()
-
+        if answer is not None: 
+            if self.current_challenge and correct_answer == answer:
+                self.score += 1
+                self.score_label_value.configure(text=str(self.score))    
+            else:
+                self.tries -= 1
+                messagebox.showerror("Warning", f"The correct answer is {correct_answer}")
+                print(self.current_challenge.result)
+           # self.new_challenge()        
+    
     def next_click(self):
         self.tries = self.tries - 1
         self.new_challenge()
 
     def check_entry(self):
+        content = self.answer_input.get().strip()
 
-        if not self.answer_input.get().strip():
+        if not content:
             self.answer_input.config(highlightbackground="red", highlightthickness=4)
+            self.answer_input.delete(0, tk.END)
             return  None
-            
+        elif not content.isdigit():
+            self.answer_input.config(highlightbackground="red", highlightthickness=4)
+            messagebox.showwarning("Warning", f"The {content} is not appropriate answer!\nPlease use only numbers")
+            self.answer_input.delete(0, tk.END)
+            return None
         else:
             self.answer_input.config(highlightbackground="white", highlightthickness=1)
             answer = int(self.answer_input.get())
             self.answer_input.delete(0, tk.END)
             return answer
-   
+    
 
 class Challenge:
 
@@ -167,7 +170,7 @@ class Challenge:
         self.x = None
         self.y = None
         self.operator = None
-        self.result = 0
+        self.result = None
 
         if self.type >= 0 and self.type <= 1: 
             self.generate_addition()
@@ -208,10 +211,6 @@ class Challenge:
             self.y = random.randint(1,10)
         self.operator = " / "
         self.result = int(self.x / self.y) # Just to be sure.
-
-    def check_answer(self, users_answer:int) -> bool:
-        return users_answer == self.result
-
     
 
 def main():
