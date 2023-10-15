@@ -1,12 +1,14 @@
 # Done: Create the function to check the answer.
-# TODO: Create a function to check if there is text in the box and alert the player if not. The same is true for the pop_up window
-# TODO: when the ok is clicked you should update the entry so it is empty
-# TODO: Create the function to update the score. 
-# TODO: Create the function to keep the score. 
-# TODO: Create the function to update the color of the box depending on the answer.
+# Done: Windows to be placed on the center of the screen.
+# Done: Create a function to check if there is text in the box and alert the player if not. The same is true for the pop_up window. Also, if there is not input for name will not go to the nest page.
+# TODO: 
+# Done: Create the function to update the score. 
+# TODO: Create the function to keep the score (high score, name etc). 
+# TODO: Create the function to update the color of the box depending on the answer. Also, to empty the box after the answer is given.
 # Done: Consider changing the design of class App_gui. I think it needs to be more simple and all the methods to be inside the main or in a different class.
  
 import tkinter as tk
+from tkinter import messagebox
 import random
 
 TRIES = 3 
@@ -14,22 +16,28 @@ class Name_pop_up:
     def __init__(self, popup_window:object) -> None:
         self.popup_window = popup_window
         self.popup_window.title("Welcome")
-        self.popup_window.minsize(width=150, height=150)
+        self.popup_window.eval("tk::PlaceWindow . center")
         self.popup_window.config(padx=20, pady=20)
         self.name = None
 
         self.label = tk.Label(text="What is your name?", font=("Arial", 20))
         self.label.grid(column=0, row=0)
 
-        self.entry = tk.Entry(width=5, background="white", foreground="black", font=("Arial", 20))
-        self.entry.grid(column=0, row=1)
+        self.entry = tk.Entry(background="white", foreground="black", width=10, font=("Arial", 20))
+        self.entry.grid(column=0, row=1, padx=5, pady=5)
 
         self.start_button = tk.Button(text="Start", command=self.on_start, font=("Arial", 20))
         self.start_button.grid(column=0, row=2)
-        
+
+
     def on_start(self):
-        self.name = self.entry.get()
-        self.popup_window.destroy()
+                
+        if not self.entry.get().strip():
+            self.entry.config(highlightbackground="red", highlightthickness=2)
+            return messagebox.showerror("Warning", "Please fill in your name!")
+        else:
+            self.name = self.entry.get()
+            self.popup_window.destroy()
         
     def get_name(self) -> str:
         return self.name
@@ -44,7 +52,8 @@ class App_gui:
         self.main_window = main_window
         self.main_window.title("Math Tests")
         self.tries= TRIES
-        self.main_window.minsize(width=300, height=300)
+        # self.main_window.minsize(width=300, height=300)
+        self.main_window.eval("tk::PlaceWindow . center")
         self.main_window.config(padx=20, pady=20)
         self.main_window.grid_rowconfigure(5, weight=1)
         self.current_challenge = None
@@ -102,6 +111,7 @@ class App_gui:
     def new_challenge(self):
         self.current_challenge = Challenge()
         self.update_labels(x=self.current_challenge.x, operator=self.current_challenge.operator, y=self.current_challenge.y)
+        self.answer_input.config(highlightbackground="white", highlightthickness=1) # User might skip a difficult answer with also leaving the box empty, in order to avoid the box to still be highlighted
 
     def update_labels(self, x: int, operator: str, y: int) -> None:
         self.x_label.configure(text=x)
@@ -114,9 +124,11 @@ class App_gui:
 
     def ok_click(self):
         
-        self.answer = int(self.answer_input.get())
+        answer = self.check_entry()
 
-        if self.current_challenge and self.current_challenge.check_answer(self.answer):
+        if answer == None:
+            pass
+        elif self.current_challenge and self.current_challenge.check_answer(answer):
             self.score += 1
             self.score_label_value.configure(text=str(self.score))
             self.new_challenge()
@@ -128,7 +140,18 @@ class App_gui:
         self.tries = self.tries - 1
         self.new_challenge()
 
-    
+    def check_entry(self):
+
+        if not self.answer_input.get().strip():
+            self.answer_input.config(highlightbackground="red", highlightthickness=4)
+            return  None
+            
+        else:
+            self.answer_input.config(highlightbackground="white", highlightthickness=1)
+            answer = int(self.answer_input.get())
+            self.answer_input.delete(0, tk.END)
+            return answer
+   
 
 class Challenge:
 
