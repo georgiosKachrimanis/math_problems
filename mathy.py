@@ -1,18 +1,34 @@
-# Done: Create the function to check the answer.
-# Done: Windows to be placed on the center of the screen.
-# Done: Create a function to check if there is text in the box and alert the player if not. The same is true for the pop_up window. Also, if there is not input for name will not go to the nest page.
-# TODO: 
-# Done: Create the function to update the score. 
-# TODO: Create the function to keep the score (high score, name etc). 
-# Done: Create the function to update the color of the box depending on the answer. Also, to empty the box after the answer is given.
-# Done: Consider changing the design of class App_gui. I think it needs to be more simple and all the methods to be inside the main or in a different class.
- 
+"""
+Math Tests Game Application
+---------------------------
+Author: Georgios Kachrimanis
+Email: georgios.kachrimanis@hotmail.com
+Date Created: 10-09-2023
+Last Modified: 16-09-2023
+Version: 1.0.0
+
+Description:
+This application provides math challenges to the user. The user is prompted for their name and then 
+presented with a series of math problems. The application keeps track of the user's score and the 
+number of remaining tries.
+
+"""
+
+
 import tkinter as tk
 from tkinter import messagebox
 import random
 
 TRIES = 3 
 class Name_pop_up:
+    """
+    A GUI popup window for obtaining a user's name.
+    
+    Attributes:
+        popup_window (tk.Tk): The main window object for this popup.
+        name (str): The name of the user.
+    """
+    ...
     def __init__(self, popup_window:object) -> None:
         self.popup_window = popup_window
         self.popup_window.title("Welcome")
@@ -45,7 +61,16 @@ class Name_pop_up:
 
 
 class App_gui:
+    """
+    The main GUI application for presenting math challenges to the user.
     
+    Attributes:
+        main_window (tk.Tk): The main window object for this application.
+        tries (int): The number of tries remaining for the user.
+        current_challenge (Challenge): The current math challenge presented to the user.
+        answer (int): The answer provided by the user.
+        score (int): The user's score.
+    """
 
     def __init__(self, main_window, name):
         global TRIES
@@ -168,13 +193,16 @@ class App_gui:
 
 
 class Challenge:
-
+    
     """
-        Generates a math challenge.
-        - Addition: Generates two numbers between 0 and 1000.
-        - Subtraction: Generates two numbers ensuring the minuend is greater than or equal to the subtrahend.
-        - Multiplication: Generates two numbers between 0 and 10.
-        - Division: Generates two numbers where the dividend is a multiple of the divisor.
+    Generates a random math challenge.
+    
+    Attributes:
+        type (int): Determines the type of math operation. 0-1 for addition, 2-3 for subtraction, 4-7 for multiplication, and 8-9 for division.
+        x (int): The first operand.
+        y (int): The second operand.
+        operator (str): The mathematical operation in string form.
+        result (int): The result of the operation.
     """
     def __init__(self) -> None:
         self.type = random.randint(0,9)

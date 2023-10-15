@@ -1,14 +1,44 @@
-<h1>Welcome to Mathy</h1>
+<h1>Math Tests Game Application</h1>
 
-This is an application I created for my daughter. 
-The main goal is to give her some small challenge with the basic mathematical functions, Addition, Subtraction, Multiplication and of course Division.
+<h2>Description</h2>
 
-- Addition: Generates two numbers between 0 and 1000.
-- Subtraction: Generates two numbers ensuring the minuend is greater than or equal to the subtrahend.
-- Multiplication: Generates two numbers between 0 and 10.
-- Division: Generates two numbers where the dividend is a multiple of the divisor.
+The Math Tests Game is an interactive application that challenges users with random mathematical problems. Upon launching, users are prompted to enter their name. They are then presented with a series of math problems and their score, as well as the number of remaining tries, is tracked throughout the game.
 
-Of course you can adjust the difficulty if you want.
-For example the addition can be numbers between 1-10 or 1-100 etc.
-The same can be said for Subtraction, Multiplication and Division
+<h2>Features</h2>
+
+- Interactive UI: Built with tkinter, the application offers a user-friendly interface that's easy to navigate.
+- Math Challenges: Generates random math challenges encompassing addition, subtraction, multiplication, and division.
+- Scoring System: The game keeps track of the user's score, updating it with each correct answer.
+- Tries System: Users have a limited number of tries. Once they're exhausted, the game ends.
+
+Installation and Setup
+
+1. Clone the repository:
+    `git clone https://github.com/georgiosKachrimanis/math_problems`
+
+2. Navigate to the repository:
+    `cd path-to-repository`
+
+3. Ensure you have Python and tkinter installed.
+
+4. Run the main script:
+    `python mathy.py` or `python3 mathy.py`
+   
+Screenshots
+ ![Alt text](<images/pop_up.jpg>)
+
+ ![Alt text](images/main_window.jpg)
+
+<h2>Usage</h2>
+
+1. Upon launch, enter your name in the popup window.
+2. Start solving math problems! 
+3. For each problem, input your answer and click "OK" or skip with the "Skip" button.
+4. Keep track of your score and tries on the main interface.
+
+<h2>Contributions</h2>
+Pull requests are welcome! For major changes, please open an issue first to discuss what you'd like to change.
+
+Author
+Georgios Kachrimanis
 
