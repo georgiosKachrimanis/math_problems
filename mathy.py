@@ -4,7 +4,7 @@
 # TODO: 
 # Done: Create the function to update the score. 
 # TODO: Create the function to keep the score (high score, name etc). 
-# TODO: Create the function to update the color of the box depending on the answer. Also, to empty the box after the answer is given.
+# Done: Create the function to update the color of the box depending on the answer. Also, to empty the box after the answer is given.
 # Done: Consider changing the design of class App_gui. I think it needs to be more simple and all the methods to be inside the main or in a different class.
  
 import tkinter as tk
@@ -34,7 +34,7 @@ class Name_pop_up:
                 
         if not self.entry.get().strip():
             self.entry.config(highlightbackground="red", highlightthickness=2)
-            return messagebox.showerror("Warning", "Please fill in your name!")
+            return messagebox.showerror("Error", "Please fill in your name!")
         else:
             self.name = self.entry.get()
             self.popup_window.destroy()
@@ -59,8 +59,7 @@ class App_gui:
         self.current_challenge = None
         self.answer = None
         self.score = 0
-
-        
+    
         # 1st Row
         # Name label
         self.name_label = tk.Label(text=f"Name:", font=("Arial", 20) )
@@ -129,12 +128,24 @@ class App_gui:
                 self.score_label_value.configure(text=str(self.score))    
             else:
                 self.tries -= 1
-                messagebox.showerror("Warning", f"The correct answer is {correct_answer}")
+                messagebox.showinfo("Correct Answer", f"The correct answer is {correct_answer}!")
                 print(self.current_challenge.result)
-           # self.new_challenge()        
+        
+            if self.tries <= 0:  # If no tries are left, close the game
+                messagebox.showinfo("Game Over", "Game Over!\nYou have exhausted all your tries!")
+                self.main_window.quit()  # Close the main window
+                return  
+        
+
+            self.new_challenge()        
     
     def next_click(self):
         self.tries = self.tries - 1
+        if self.tries <= 0:  # If no tries are left, close the game
+            messagebox.showinfo("Game Over", "Game Over!\nYou have exhausted all your tries!")
+            self.main_window.quit()  # Close the main window
+            return  
+        
         self.new_challenge()
 
     def check_entry(self):
@@ -146,7 +157,7 @@ class App_gui:
             return  None
         elif not content.isdigit():
             self.answer_input.config(highlightbackground="red", highlightthickness=4)
-            messagebox.showwarning("Warning", f"The {content} is not appropriate answer!\nPlease use only numbers")
+            messagebox.showwarning("Warning", f"'{content}' is not appropriate answer!\nPlease use only numbers.")
             self.answer_input.delete(0, tk.END)
             return None
         else:
@@ -154,7 +165,7 @@ class App_gui:
             answer = int(self.answer_input.get())
             self.answer_input.delete(0, tk.END)
             return answer
-    
+
 
 class Challenge:
 
@@ -226,12 +237,8 @@ def main():
     main_window = tk.Tk()
     app_start = App_gui(main_window, name)
 
-    while TRIES !=0:
-        app_start.new_challenge()           
-        main_window.mainloop()
-
-    # main_window.destroy()
-    
+    app_start.new_challenge()           
+    main_window.mainloop()
 
 if __name__ == "__main__":
     main()        
