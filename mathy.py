@@ -18,7 +18,9 @@ number of remaining tries.
 import tkinter as tk
 from tkinter import messagebox
 import random
+import os
 
+HIGH_SCORE = "high_score.txt"
 TRIES = 3 
 class Name_pop_up:
     """
@@ -58,7 +60,6 @@ class Name_pop_up:
     def get_name(self) -> str:
         return self.name
         
-
 
 class App_gui:
     """
@@ -161,7 +162,6 @@ class App_gui:
                 self.main_window.quit()  # Close the main window
                 return  
         
-
             self.new_challenge()        
     
     def next_click(self):
@@ -250,7 +250,34 @@ class Challenge:
             self.y = random.randint(1,10)
         self.operator = " / "
         self.result = int(self.x / self.y) # Just to be sure.
+
+class HighScoreManager:
+
+    def __init__(self) -> None:
+        self.file_path = HIGH_SCORE
+        
+
+    def load_high_score(self) -> dict:
+        if os.path.exists(self.file_path):
+            with open(self.file_path) as file:
+                name = file.readline().strip()
+                score = int(file.readline().strip())
+                return {"Name": name, "Score":score}
+        else:
+            return {"Name": "None", "Score":0}
+
+    def update_high_score(self, player_name:str, new_score:int):
+        high_score_dict = self.load_high_score()
+        current_high_score = high_score_dict['Score']
+
+        if new_score > current_high_score:
+            self.save_high_score(player_name, new_score)
     
+    def save_high_score(self, player_name:str, new_high_score:int):
+        with open(self.file_path, "w") as file:
+            file.write(f"{player_name}\n{new_high_score}")
+
+
 
 def main():
 
@@ -261,12 +288,20 @@ def main():
         
     name = pop_up.get_name()
 
+    high_score = HighScoreManager()
+
     # Main application window
     main_window = tk.Tk()
     app_start = App_gui(main_window, name)
 
     app_start.new_challenge()           
     main_window.mainloop()
+    
+    # Saving High score
+    score = app_start.score 
+    high_score.update_high_score(player_name=name, new_score=score)
+    print(name, score)
+
 
 if __name__ == "__main__":
     main()        
