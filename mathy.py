@@ -4,8 +4,8 @@ Math Tests Game Application
 Author: Georgios Kachrimanis
 Email: georgios.kachrimanis@hotmail.com
 Date Created: 10-09-2023
-Last Modified: 16-09-2023
-Version: 1.0.0
+Last Modified: 20-09-2023
+Version: 1.0.1
 
 Description:
 This application provides math challenges to the user. The user is prompted for their name and then 
@@ -73,7 +73,7 @@ class App_gui:
         score (int): The user's score.
     """
 
-    def __init__(self, main_window, name):
+    def __init__(self, main_window:object, name:str, high_score: int):
         global TRIES
         self.main_window = main_window
         self.main_window.title("Math Tests")
@@ -85,15 +85,16 @@ class App_gui:
         self.current_challenge = None
         self.answer = None
         self.score = 0
+        self.high_score = high_score
     
         # 1st Row
         # Name label
-        self.name_label = tk.Label(text=f"Name:", font=("Arial", 20) )
+        self.name_label = tk.Label(text=f"Player:", font=("Arial", 20) )
         self.name_label.grid(column=0, row=0)
         self.player_label = tk.Label(text=f"{name}", font=("Arial", 20) )
         self.player_label.grid(column=1, row=0)
         # Remaining Tries
-        self.remaining_tries_label = tk.Label(text=f"Tries:", font=("Arial", 20) )
+        self.remaining_tries_label = tk.Label(text=f"Remaining Tries:", font=("Arial", 20) )
         self.remaining_tries_label.grid(column=3, row=0)
         self.tries_label = tk.Label(text=f"{self.tries}", font=("Arial", 20) )
         self.tries_label.grid(column=4, row=0)
@@ -104,6 +105,12 @@ class App_gui:
         # Score value label
         self.score_label_value = tk.Label(text=f"{str(self.score)}", font=("Arial", 20))
         self.score_label_value.grid(column=1, row=1)
+        # High Score Label
+        self.high_score_label = tk.Label(text=f"High Score: ", font=("Arial", 20) )
+        self.high_score_label.grid(column=3, row=1)
+        # High Score value label
+        self.high_score_label_value = tk.Label(text=f"{str(self.high_score)}", font=("Arial", 20))
+        self.high_score_label_value.grid(column=4, row=1)
 
         # 3rd Row
         self.x_label = tk.Label(text=" X ", font=("Arial", 36) )
@@ -277,6 +284,10 @@ class HighScoreManager:
         with open(self.file_path, "w") as file:
             file.write(f"{player_name}\n{new_high_score}")
 
+    def get_high_score(self) -> int:
+        high_score_dict = self.load_high_score()
+        current_high_score = int(high_score_dict["Score"])
+        return current_high_score 
 
 
 def main():
@@ -292,7 +303,7 @@ def main():
 
     # Main application window
     main_window = tk.Tk()
-    app_start = App_gui(main_window, name)
+    app_start = App_gui(main_window, name, high_score=high_score.get_high_score())
 
     app_start.new_challenge()           
     main_window.mainloop()
